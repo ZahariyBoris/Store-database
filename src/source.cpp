@@ -37,7 +37,7 @@ void enterData() {
 }
 
 void saveDataToFile() {
-    ofstream outFile("data.txt");
+    ofstream outFile("C:\\DataBaseCpp\\data\\data.txt");
     if (!outFile) {
         cout << "Error opening file for writing!" << endl;
         return;
@@ -53,7 +53,7 @@ void saveDataToFile() {
 }
 
 void deleteDataFromFile() {
-    ofstream outFile("data.txt");
+    ofstream outFile("C:\\DataBaseCpp\\data\\data.txt");
     if (!outFile) {
         cout << "Error opening file for writing!" << endl;
         return;
@@ -65,7 +65,7 @@ void deleteDataFromFile() {
 
 
 void loadDataFromFile() {
-    ifstream inFile("data.txt");
+    ifstream inFile("C:\\DataBaseCpp\\data\\data.txt");
     if (!inFile) {
         cout << "Error opening file for reading!" << endl;
         return;
