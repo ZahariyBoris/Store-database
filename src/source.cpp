@@ -5,6 +5,9 @@
 #include <string>
 #include <thread>
 #include <limits>
+#include "C:\DataBaseCpp\src\headers\createUser.h"
+#include "C:\DataBaseCpp\src\headers\authUser.h"
+
 using namespace std;
 
 struct dataBase {
@@ -85,8 +88,27 @@ void loadDataFromFile() {
 }
 
 int main() {
+
     loadDataFromFile();
+    
+    char choiceStart;
     char choice;
+
+    cout << "WELCOME TO DATABASE-ULTRA 0.1: " << endl;
+    cout << "Choose action: (a - Authentificate user, c - Create new user, q - Continue to Database)" << endl;
+    cin >> choiceStart;
+
+    if (choiceStart == 'a') {
+        userAuth();
+    }
+    else if (choiceStart == 'c') {
+        userCreate();
+    }
+    else if (choiceStart == 'q') {
+        goto start;
+    }
+    
+    start:
     while (true) {
         cout << endl << "Choose action: (0 - Display products, 1 - Create product, 2 - Save products, d - Delete data, q - Quit)" << endl;
         cin >> choice;
