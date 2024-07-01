@@ -1,141 +1,120 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <chrono>
+#include <vector>
+#include <string>
+#include <thread>
+#include <limits>
 using namespace std;
 
 struct dataBase {
-    char name[20];
+    string name;
     int ID;
     float price;
 };
 
-dataBase myDataBase[10];
-int productCount = 0;
-const int MAX_ATTEMPTS = 3;
-const int PASSWORD = 901090;
+vector<dataBase> myDataBase;
 
 void printData() {
     cout << "INFO: " << endl;
-    for (int i = 0; i < productCount; i++) {
-        cout << "Product name: " << myDataBase[i].name << endl;
-        cout << "Product ID: " << myDataBase[i].ID << endl;
-        cout << "Product price: " << myDataBase[i].price << endl << endl;
+    for (const auto& product : myDataBase) {
+        cout << "Product name: " << product.name << endl;
+        cout << "Product ID: " << product.ID << endl;
+        cout << "Product price: " << product.price << endl << endl;
     }
 }
 
 void enterData() {
+    dataBase newProduct;
     cout << "Enter name of product: ";
-    cin >> myDataBase[productCount].name;
+    cin >> newProduct.name;
     cout << "Enter ID of product: ";
-    cin >> myDataBase[productCount].ID;
+    cin >> newProduct.ID;
     cout << "Enter the price of product: ";
-    cin >> myDataBase[productCount].price;
-    productCount++;
+    cin >> newProduct.price;
+    myDataBase.push_back(newProduct);
     cout << "Product created successfully!" << endl;
 }
 
 void saveDataToFile() {
-    ofstream outFile("C:\\DataBaseCpp\\data\\data.txt");
+    ofstream outFile("data.txt");
     if (!outFile) {
         cout << "Error opening file for writing!" << endl;
         return;
     }
-    outFile << productCount << endl;
-    for (int i = 0; i < productCount; i++) {
-        outFile << myDataBase[i].name << endl;
-        outFile << myDataBase[i].ID << endl;
-        outFile << myDataBase[i].price << endl;
+    outFile << myDataBase.size() << endl;
+    for (const auto& product : myDataBase) {
+        outFile << product.name << endl;
+        outFile << product.ID << endl;
+        outFile << product.price << endl;
     }
     outFile.close();
     cout << "Data saved successfully!" << endl;
 }
 
+void deleteDataFromFile() {
+    ofstream outFile("data.txt");
+    if (!outFile) {
+        cout << "Error opening file for writing!" << endl;
+        return;
+    }
+
+    outFile << 0 << endl;
+    outFile.close();
+}
+
+
 void loadDataFromFile() {
-    ifstream inFile("C:\\DataBaseCpp\\data\\data.txt");
+    ifstream inFile("data.txt");
     if (!inFile) {
         cout << "Error opening file for reading!" << endl;
         return;
     }
+    size_t productCount;
     inFile >> productCount;
-    inFile.ignore();
-    for (int i = 0; i < productCount; i++) {
-        inFile.getline(myDataBase[i].name, 20);
-        inFile >> myDataBase[i].ID;
-        inFile >> myDataBase[i].price;
-        inFile.ignore();
+    inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+    myDataBase.resize(productCount);
+    for (auto& product : myDataBase) {
+        getline(inFile, product.name);
+        inFile >> product.ID;
+        inFile >> product.price;
+        inFile.ignore(numeric_limits<streamsize>::max(), '\n');
     }
     inFile.close();
     cout << "Data loaded successfully!" << endl;
 }
 
-void deleteDataFromFile() {
-    ofstream outFile("C:\\DataBaseCpp\\data\\data.txt");
-    if (!outFile) {
-        cout << "Error opening file for writing!" << endl;
-        return;
-    }
-    productCount = 0;
-    outFile << productCount << endl;
-    outFile.close();
-}
-
-bool checkPassword() {
-    int password;
-    for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-        cout << "Enter password: ";
-        cin >> password;
-        if (password == PASSWORD) {
-            return true;
-        } else {
-            cout << "Wrong password! ";
-            if (attempt < MAX_ATTEMPTS) {
-                cout << "Try Again!" << endl;
-            } else {
-                cout << "Maximum attempts reached. Exiting program." << endl;
-            }
-        }
-    }
-    return false;
-}
-
 int main() {
-    
-    if (checkPassword()) {
-        loadDataFromFile();
-        int amount;
-        char choice;
-        while (true) {
-            cout << endl << "Choose action: (0 - Display products, 1 - Create product, 2 - Save products, d - Delete data, q - Quit)" << endl;
-            cin >> choice;
-            cout << endl;
-            if (choice == '0') {
-                printData();
-            } 
-            else if (choice == '1') {
-                if (productCount < 10) {
-                    enterData();
-                } 
-                else {
-                    cout << "Maximum number of products reached!" << endl;
-                }
-            }
-            else if (choice == '2') {
-                saveDataToFile();
-            }
-            else if (choice == 'q') {
-                cout << "Goodbye!" << endl;
-                break;
-            }
-            else if (choice == 'd') {
-                deleteDataFromFile();
-                cout << "Data deleted successfully!" << endl;
-            } 
-            else {
-                cout << "Unknown operation! Try Again!" << endl;
-            }
+    loadDataFromFile();
+    char choice;
+    while (true) {
+        cout << endl << "Choose action: (0 - Display products, 1 - Create product, 2 - Save products, d - Delete data, q - Quit)" << endl;
+        cin >> choice;
+        cout << endl;
+        if (choice == '0') {
+            printData();
+        } 
+        else if (choice == '1') {
+            enterData();
+        } 
+        else if (choice == '2') {
+            saveDataToFile();
+        } 
+        else if (choice == 'q') {
+            cout << "GOODBYE!" << endl;
+            this_thread::sleep_for(chrono::milliseconds(500));
+            exit(0);
         }
-        saveDataToFile();
+        else if (choice == 'd') {
+            deleteDataFromFile();
+            cout << "Data deleted successfully!" << endl;
+        } 
+        else {
+            cout << "Unknown operation! Try Again!" << endl;
+        }
     }
+
+    saveDataToFile();
 
     return 0;
 }
