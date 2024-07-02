@@ -40,7 +40,7 @@ void enterData() {
 }
 
 void saveDataToFile() {
-    ofstream outFile("C:\\DataBaseCpp\\data\\data.txt");
+    ofstream outFile("C:\\DataBaseCpp\\data\\configs\\user.cfg");
     if (!outFile) {
         cout << "Error opening file for writing!" << endl;
         return;
@@ -56,7 +56,7 @@ void saveDataToFile() {
 }
 
 void deleteDataFromFile() {
-    ofstream outFile("C:\\DataBaseCpp\\data\\data.txt");
+    ofstream outFile("C:\\DataBaseCpp\\data\\configs\\user.cfg");
     if (!outFile) {
         cout << "Error opening file for writing!" << endl;
         return;
@@ -68,7 +68,7 @@ void deleteDataFromFile() {
 
 
 void loadDataFromFile() {
-    ifstream inFile("C:\\DataBaseCpp\\data\\data.txt");
+    ifstream inFile("C:\\DataBaseCpp\\data\\configs\\user.cfg");
     if (!inFile) {
         cout << "Error opening file for reading!" << endl;
         return;

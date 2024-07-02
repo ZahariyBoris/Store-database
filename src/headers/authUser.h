@@ -18,7 +18,7 @@ void userAuth() {
     cout << "Enter your token: ";
     cin >> token;
 
-    ifstream file("C:\\DataBaseCpp\\data\\tokens.txt");
+    ifstream file("C:\\DataBaseCpp\\data\\configs\\user.cfg");
     
     while (getline(file, lineToken)) {
         if (lineToken == token) {
@@ -39,7 +39,7 @@ void userAuth() {
     cout << "Enter your password: ";
     cin >> password;
 
-    ifstream filePass("C:\\DataBaseCpp\\data\\passwords.txt");
+    ifstream filePass("C:\\DataBaseCpp\\data\\configs\\user.cfg");
 
     while (getline(filePass, linePassword)) {
         if (stoi(linePassword) == password) {

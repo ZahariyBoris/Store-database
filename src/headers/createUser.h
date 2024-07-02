@@ -26,17 +26,15 @@ void userCreate() {
     newUserInfo.password = password;
     newUser.push_back(newUserInfo);
 
-    ofstream tokenFile("C:\\DataBaseCpp\\data\\tokens.txt", ios::app);
-    ofstream passwordFile("C:\\DataBaseCpp\\data\\passwords.txt", ios::app);
+    ofstream tokenFile("C:\\DataBaseCpp\\data\\configs\\user.cfg", ios::app);
 
-    if (tokenFile.is_open() && passwordFile.is_open()) {
+    if (tokenFile.is_open()) {
         tokenFile << token << endl;
-        passwordFile << password << endl;
+        tokenFile << password << endl;
         cout << "New user created successfully!" << endl;
     } else {
         cout << "Unable to open files." << endl;
     }
 
     tokenFile.close();
-    passwordFile.close();
 }
