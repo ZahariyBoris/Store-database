@@ -8,3 +8,4 @@ TODO:
     7. Filtering
     8. Input validation
     9. Auto-save feature (MAYBE)
+    10. Generate ID for the products
