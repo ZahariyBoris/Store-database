@@ -1,40 +1,30 @@
-#include <iostream>
-#include <cstring>
-#include <fstream>
-#include <vector>
-using namespace std;
+bool fileIsEmpty(const std::string& filename) {
+    std::ifstream inFile(filename);
+    return inFile.peek() == std::ifstream::traits_type::eof();
+}
 
-struct infoNewUser {
-    string token;
-    int password;
-};
+void createUser(const std::string& filename) {
+    std::string login, password;
 
-vector<infoNewUser> newUser;
-
-void userCreate() {
-    string token = "";
-    int password;
-    
-    cout << "CREATE NEW USER: " << endl;
-    cout << "Enter your token: ";
-    cin >> token;
-    cout << "Enter your password: ";
-    cin >> password;
-
-    infoNewUser newUserInfo;
-    newUserInfo.token = token;
-    newUserInfo.password = password;
-    newUser.push_back(newUserInfo);
-
-    ofstream tokenFile("C:\\DataBaseCpp\\data\\configs\\user.cfg", ios::app);
-
-    if (tokenFile.is_open()) {
-        tokenFile << token << endl;
-        tokenFile << password << endl;
-        cout << "New user created successfully!" << endl;
-    } else {
-        cout << "Unable to open files." << endl;
+    if (!fileIsEmpty(filename)) {
+        std::cout << "Error: User already exists. Only one user can be created." << std::endl;
+        return;
     }
 
-    tokenFile.close();
+    std::cout << "\nEnter new login: ";
+    std::cin >> login;
+
+    std::cout << "Enter password: ";
+    std::cin >> password;
+
+    std::ofstream outFile(filename);
+    if (!outFile) {
+        std::cout << "Error opening file for writing: " << filename << std::endl;
+        return;
+    }
+
+    outFile << login << std::endl << password << std::endl;
+    outFile.close();
+
+    std::cout << "User created successfully!" << std::endl;
 }

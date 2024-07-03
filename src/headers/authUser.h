@@ -1,57 +1,23 @@
-#include <iostream>
-#include <cstring>
-#include <fstream>
-#include <vector>
-using namespace std;
+bool authenticateUser(const std::string& filename, const std::string& login, const std::string& password) {
+    std::ifstream inFile(filename);
+    if (!inFile) {
+        std::cerr << "Error: Could not open the file." << std::endl;
+        return false;
+    }
 
-void userAuth() {
-    string token;
-    int password;
-
-    string lineToken;
-    string linePassword;
-
-    bool tokenFound = false;
-    bool passwordFound = false;
-
-    cout << "PLEASE LOG IN: " << endl;
-    cout << "Enter your token: ";
-    cin >> token;
-
-    ifstream file("C:\\DataBaseCpp\\data\\configs\\user.cfg");
-    
-    while (getline(file, lineToken)) {
-        if (lineToken == token) {
-            tokenFound = true;
-            break;
+    std::string line;
+    while (std::getline(inFile, line)) {
+        if (line == login) {
+            std::string storedPassword;
+            std::getline(inFile, storedPassword);
+            if (storedPassword == password) {
+                return true;
+            } else {
+                return false;
+            }
         }
+        
+        std::getline(inFile, line);
     }
-
-    if (tokenFound == true) {
-        cout << "Key found!" << endl;
-    }
-    else {
-        cout << "Key not found!" << endl;
-    }
-
-    file.close();
-
-    cout << "Enter your password: ";
-    cin >> password;
-
-    ifstream filePass("C:\\DataBaseCpp\\data\\configs\\user.cfg");
-
-    while (getline(filePass, linePassword)) {
-        if (stoi(linePassword) == password) {
-            passwordFound = true;
-            break;
-        }
-    }
-
-    if (passwordFound == true) {
-        cout << "Password found!" << endl;
-    }
-    else {
-        cout << "Password not found!" << endl;
-    }
+    return false;
 }

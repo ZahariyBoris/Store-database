@@ -1,25 +1,71 @@
 #include <iostream>
 #include <fstream>
-#include <chrono>
 #include <vector>
 #include <string>
-#include <thread>
 #include <limits>
-#include "C:\DataBaseCpp\src\headers\createUser.h"
+#include <chrono>
+#include <thread>
+
 #include "C:\DataBaseCpp\src\headers\authUser.h"
+#include "C:\DataBaseCpp\src\headers\createUser.h"
 
 using namespace std;
 
-struct dataBase {
+struct Product {
     string name;
     int ID;
     float price;
 };
 
-vector<dataBase> myDataBase;
+vector<Product> myDataBase;
+
+const string productFilename = "C:\\DataBaseCpp\\data\\configs\\database.cfg";
+const string userFilename = "C:\\DataBaseCpp\\data\\configs\\user.cfg";
+
+void loadDataFromFile(const string& filename) {
+    ifstream inFile(filename);
+    if (!inFile) {
+        cout << "Error opening file for reading: " << filename << endl;
+        return;
+    }
+
+    size_t productCount;
+    if (!(inFile >> productCount)) {
+        cout << "Error reading number of products from file: " << filename << endl;
+        inFile.close();
+        return;
+    }
+    inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    myDataBase.clear();
+    myDataBase.resize(productCount);
+
+    for (auto& product : myDataBase) {
+        if (!getline(inFile, product.name)) {
+            cout << "Error reading product name!" << endl;
+            break;
+        }
+        if (!(inFile >> product.ID)) {
+            cout << "Error reading product ID!" << endl;
+            break;
+        }
+        if (!(inFile >> product.price)) {
+            cout << "Error reading product price!" << endl;
+            break;
+        }
+        inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    inFile.close();
+    cout << "Data loaded successfully from file: " << filename << endl;
+}
 
 void printData() {
-    cout << "INFO: " << endl;
+    if (myDataBase.empty()) {
+        cout << "No products to display." << endl;
+        return;
+    }
+    cout << endl << "INFO:" << endl;
     for (const auto& product : myDataBase) {
         cout << "Product name: " << product.name << endl;
         cout << "Product ID: " << product.ID << endl;
@@ -28,9 +74,10 @@ void printData() {
 }
 
 void enterData() {
-    dataBase newProduct;
-    cout << "Enter name of product: ";
-    cin >> newProduct.name;
+    Product newProduct;
+    cout << "\nEnter name of product: ";
+    cin.ignore();
+    getline(cin, newProduct.name);
     cout << "Enter ID of product: ";
     cin >> newProduct.ID;
     cout << "Enter the price of product: ";
@@ -39,104 +86,134 @@ void enterData() {
     cout << "Product created successfully!" << endl;
 }
 
-void saveDataToFile() {
-    ofstream outFile("C:\\DataBaseCpp\\data\\configs\\user.cfg");
+void saveDataToFile(const string& filename) {
+    ofstream outFile(filename);
     if (!outFile) {
-        cout << "Error opening file for writing!" << endl;
+        cout << "Error opening file for writing: " << filename << endl;
         return;
     }
+
     outFile << myDataBase.size() << endl;
     for (const auto& product : myDataBase) {
         outFile << product.name << endl;
         outFile << product.ID << endl;
         outFile << product.price << endl;
     }
+
     outFile.close();
-    cout << "Data saved successfully!" << endl;
+    cout << "Data saved successfully to file: " << filename << endl;
 }
 
-void deleteDataFromFile() {
-    ofstream outFile("C:\\DataBaseCpp\\data\\configs\\user.cfg");
-    if (!outFile) {
-        cout << "Error opening file for writing!" << endl;
+void deleteDataFromFile(const string& filename1) {
+    ofstream outFile1(filename1, ofstream::trunc);
+    if (!outFile1) {
+        cerr << "Error opening file for writing: " << filename1 << endl;
         return;
     }
-
-    outFile << 0 << endl;
-    outFile.close();
+    outFile1.close();
+    cout << "Data deleted successfully from file: " << filename1 << endl;
 }
 
-
-void loadDataFromFile() {
-    ifstream inFile("C:\\DataBaseCpp\\data\\configs\\user.cfg");
+bool userExists(const string& filename, const string& login) {
+    ifstream inFile(filename);
     if (!inFile) {
-        cout << "Error opening file for reading!" << endl;
-        return;
+        return false;
     }
-    size_t productCount;
-    inFile >> productCount;
-    inFile.ignore(numeric_limits<streamsize>::max(), '\n');
-    myDataBase.resize(productCount);
-    for (auto& product : myDataBase) {
-        getline(inFile, product.name);
-        inFile >> product.ID;
-        inFile >> product.price;
-        inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    string fileLogin;
+    while (inFile >> fileLogin) {
+        if (fileLogin == login) {
+            inFile.close();
+            return true;
+        }
     }
+
     inFile.close();
-    cout << "Data loaded successfully!" << endl;
+    return false;
 }
 
 int main() {
-
-    loadDataFromFile();
     
-    char choiceStart;
     char choice;
+    string login, password;
 
-    cout << "WELCOME TO DATABASE-ULTRA 0.1: " << endl;
-    cout << "Choose action: (a - Authentificate user, c - Create new user, q - Continue to Database)" << endl;
-    cin >> choiceStart;
+    cout << "WELCOME TO DATABASE-ULTRA 0.1" << endl;
 
-    if (choiceStart == 'a') {
-        userAuth();
-    }
-    else if (choiceStart == 'c') {
-        userCreate();
-    }
-    else if (choiceStart == 'q') {
-        goto start;
-    }
-    
-    start:
     while (true) {
-        cout << endl << "Choose action: (0 - Display products, 1 - Create product, 2 - Save products, d - Delete data, q - Quit)" << endl;
+        cout << endl << "Choose action:" << endl;
+        cout << "1 - Create new user" << endl;
+        cout << "2 - Authenticate user" << endl;
+        cout << "q - Quit" << endl;
+        cout << "Enter your choice: ";
+        
         cin >> choice;
-        cout << endl;
-        if (choice == '0') {
-            printData();
-        } 
-        else if (choice == '1') {
-            enterData();
-        } 
-        else if (choice == '2') {
-            saveDataToFile();
-        } 
-        else if (choice == 'q') {
-            cout << "GOODBYE!" << endl;
-            this_thread::sleep_for(chrono::milliseconds(500));
-            exit(0);
-        }
-        else if (choice == 'd') {
-            deleteDataFromFile();
-            cout << "Data deleted successfully!" << endl;
-        } 
-        else {
-            cout << "Unknown operation! Try Again!" << endl;
+        
+        switch (choice) {
+            case '1':
+                createUser(userFilename);
+                break;
+            case '2':
+                cout << endl << "Enter login: ";
+                cin >> login;
+                cout << "Enter password: ";
+                cin >> password;
+
+                if (authenticateUser(userFilename, login, password)) {
+                    cout << "Authentication successful! Welcome, " << login << "!" << endl;
+
+                    loadDataFromFile(productFilename);
+
+                    while (true) {
+                        cout << endl << "Choose action:" << endl;
+                        cout << "1 - Display products" << endl;
+                        cout << "2 - Create product" << endl;
+                        cout << "3 - Save products to file" << endl;
+                        cout << "4 - Delete all data (User and products)" << endl;
+                        cout << "q - Quit" << endl;
+                        cout << "Enter your choice: ";
+
+                        cin >> choice;
+
+                        switch (choice) {
+                            case '1':
+                                printData();
+                                break;
+                            case '2':
+                                enterData();
+                                break;
+                            case '3':
+                                saveDataToFile(productFilename);
+                                break;
+                            case '4':
+                                deleteDataFromFile(productFilename);
+                                deleteDataFromFile(userFilename);
+                                break;
+                            case 'q':
+                                cout << "Goodbye!" << endl;
+                                this_thread::sleep_for(chrono::milliseconds(500));
+                                exit(0);
+                            default:
+                                cout << "Invalid choice. Try again." << endl;
+                                cin.clear();
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                break;
+                        }
+                    }
+                } else {
+                    cout << "Authentication failed. Please try again." << endl;
+                }
+                break;
+            case 'q':
+                cout << "Goodbye!" << endl;
+                this_thread::sleep_for(chrono::milliseconds(500));
+                return 0;
+            default:
+                cout << "Invalid choice. Try again." << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                break;
         }
     }
-
-    saveDataToFile();
 
     return 0;
 }
