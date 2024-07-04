@@ -19,7 +19,7 @@ struct Product {
 
 vector<Product> myDataBase;
 
-const string productFilename = "C:\\DataBaseCpp\\data\\configs\\database.cfg";
+const string productFilename = "C:\\DataBaseCpp\\data\\database.txt";
 const string userFilename = "C:\\DataBaseCpp\\data\\configs\\user.cfg";
 
 void loadDataFromFile(const string& filename) {
