@@ -5,10 +5,11 @@
 #include <limits>
 #include <chrono>
 #include <thread>
+#include <sstream>
 
-#include "C:\DataBaseCpp\src\headers\authUser.h"
-#include "C:\DataBaseCpp\src\headers\createUser.h"
-#include "C:\DataBaseCpp\src\headers\idGenerator.h"
+#include "C:\\DataBaseCpp\\src\\headers\\authUser.h"
+#include "C:\\DataBaseCpp\\src\\headers\\createUser.h"
+#include "C:\\DataBaseCpp\\src\\headers\\idGenerator.h"
 
 using namespace std;
 
@@ -20,8 +21,8 @@ struct Product {
 
 vector<Product> myDataBase;
 
-const string productFilename = "C:\\DataBaseCpp\\data\\database.txt";
-const string userFilename = "C:\\DataBaseCpp\\data\\configs\\user.cfg";
+const string productFilename = "C:\\DataBaseCpp\\data\\database.csv";
+const string userFilename = "C:\\DataBaseCpp\\config\\user.cfg";
 
 void loadDataFromFile(const string& filename) {
     ifstream inFile(filename);
@@ -30,31 +31,20 @@ void loadDataFromFile(const string& filename) {
         return;
     }
 
-    size_t productCount;
-    if (!(inFile >> productCount)) {
-        cout << "Error reading number of products from file: " << filename << endl;
-        inFile.close();
-        return;
-    }
-    inFile.ignore(numeric_limits<streamsize>::max(), '\n');
-
     myDataBase.clear();
-    myDataBase.resize(productCount);
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string name;
+        int ID;
+        float price;
 
-    for (auto& product : myDataBase) {
-        if (!getline(inFile, product.name)) {
-            cout << "Error reading product name!" << endl;
-            break;
-        }
-        if (!(inFile >> product.ID)) {
-            cout << "Error reading product ID!" << endl;
-            break;
-        }
-        if (!(inFile >> product.price)) {
-            cout << "Error reading product price!" << endl;
-            break;
-        }
-        inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(ss, name, ',');
+        ss >> ID;
+        ss.ignore(1);
+        ss >> price;
+
+        myDataBase.push_back({name, ID, price});
     }
 
     inFile.close();
@@ -93,11 +83,8 @@ void saveDataToFile(const string& filename) {
         return;
     }
 
-    outFile << myDataBase.size() << endl;
     for (const auto& product : myDataBase) {
-        outFile << product.name << endl;
-        outFile << product.ID << endl;
-        outFile << product.price << endl;
+        outFile << product.name << "," << product.ID << "," << product.price << endl;
     }
 
     outFile.close();
