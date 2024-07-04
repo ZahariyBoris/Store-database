@@ -8,6 +8,7 @@
 
 #include "C:\DataBaseCpp\src\headers\authUser.h"
 #include "C:\DataBaseCpp\src\headers\createUser.h"
+#include "C:\DataBaseCpp\src\headers\idGenerator.h"
 
 using namespace std;
 
@@ -78,8 +79,7 @@ void enterData() {
     cout << "\nEnter name of product: ";
     cin.ignore();
     getline(cin, newProduct.name);
-    cout << "Enter ID of product: ";
-    cin >> newProduct.ID;
+    newProduct.ID = generateID();
     cout << "Enter the price of product: ";
     cin >> newProduct.price;
     myDataBase.push_back(newProduct);
