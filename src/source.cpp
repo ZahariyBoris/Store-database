@@ -128,18 +128,18 @@ int main() {
 
     while (true) {
         cout << endl << "Choose action:" << endl;
-        cout << "1 - Create new user" << endl;
-        cout << "2 - Authenticate user" << endl;
+        cout << "c - Create new user" << endl;
+        cout << "a - Authenticate user" << endl;
         cout << "q - Quit" << endl;
         cout << "Enter your choice: ";
         
         cin >> choice;
         
         switch (choice) {
-            case '1':
+            case 'c':
                 createUser(userFilename);
                 break;
-            case '2':
+            case 'a':
                 cout << endl << "Enter login: ";
                 cin >> login;
                 cout << "Enter password: ";
@@ -154,8 +154,8 @@ int main() {
                         cout << endl << "Choose action:" << endl;
                         cout << "1 - Display products" << endl;
                         cout << "2 - Create product" << endl;
-                        cout << "3 - Save products to file" << endl;
-                        cout << "4 - Delete all data (User and products)" << endl;
+                        cout << "3 - Delete all data (User and products)" << endl;
+                        cout << "4 - Delete only data" << endl;
                         cout << "q - Quit" << endl;
                         cout << "Enter your choice: ";
 
@@ -167,13 +167,14 @@ int main() {
                                 break;
                             case '2':
                                 enterData();
+                                saveDataToFile(productFilename);
                                 break;
                             case '3':
-                                saveDataToFile(productFilename);
+                                deleteDataFromFile(productFilename);
+                                deleteDataFromFile(userFilename);
                                 break;
                             case '4':
                                 deleteDataFromFile(productFilename);
-                                deleteDataFromFile(userFilename);
                                 break;
                             case 'q':
                                 cout << "Goodbye!" << endl;
