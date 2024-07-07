@@ -5,6 +5,8 @@
 #include <limits>
 #include <chrono>
 #include <thread>
+#include <iomanip>
+#include <cstdlib>
 #include <sstream>
 
 #include "headers/authUser.h"
@@ -23,6 +25,14 @@ vector<Product> myDataBase;
 
 const string productFilename = "C:\\DataBaseCpp\\data\\database.csv";
 const string userFilename = "C:\\DataBaseCpp\\config\\user.cfg";
+
+void clearConsole() {
+    #ifdef _WIN32
+    system("cls");
+    #else
+    system("clear");
+    #endif
+}
 
 void loadDataFromFile(const string& filename) {
     ifstream inFile(filename);
@@ -56,12 +66,15 @@ void printData() {
         cout << "No products to display." << endl;
         return;
     }
-    cout << endl << "INFO:" << endl;
+    cout << "---------------------------------------" << endl; 
+    cout << "|   Name   |      ID      |   Price   |" << endl;
+    cout << "---------------------------------------" << endl;
     for (const auto& product : myDataBase) {
-        cout << "Product name: " << product.name << endl;
-        cout << "Product ID: " << product.ID << endl;
-        cout << "Product price: " << product.price << endl << endl;
+        cout << "|" << setw(9) << product.name << " |" 
+        << setw(13) << product.ID << " |" 
+        << setw(10) << product.price << " |" << endl;
     }
+    cout << "---------------------------------------" << endl << endl;
 }
 
 void enterData() {
@@ -124,7 +137,9 @@ int main() {
     char choice;
     string login, password;
 
-    cout << "WELCOME TO DATABASE-ULTRA 0.1" << endl;
+    cout << "---------------------------------" << endl;
+    cout << "| WELCOME TO DATABASE-ULTRA 0.1 |" << endl;
+    cout << "---------------------------------";
 
     while (true) {
         cout << endl << "Choose action:" << endl;
@@ -138,8 +153,11 @@ int main() {
         switch (choice) {
             case 'c':
                 createUser(userFilename);
+                this_thread::sleep_for(chrono::milliseconds(999));
+                clearConsole();
                 break;
             case 'a':
+                clearConsole();
                 cout << endl << "Enter login: ";
                 cin >> login;
                 cout << "Enter password: ";
@@ -149,6 +167,8 @@ int main() {
                     cout << "Authentication successful! Welcome, " << login << "!" << endl;
 
                     loadDataFromFile(productFilename);
+                    this_thread::sleep_for(chrono::milliseconds(700));
+                    clearConsole();
 
                     while (true) {
                         cout << endl << "Choose action:" << endl;
@@ -163,9 +183,11 @@ int main() {
 
                         switch (choice) {
                             case '1':
+                                clearConsole();
                                 printData();
                                 break;
                             case '2':
+                                clearConsole();
                                 enterData();
                                 saveDataToFile(productFilename);
                                 break;
