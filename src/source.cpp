@@ -7,9 +7,9 @@
 #include <thread>
 #include <sstream>
 
-#include "C:\\DataBaseCpp\\src\\headers\\authUser.h"
-#include "C:\\DataBaseCpp\\src\\headers\\createUser.h"
-#include "C:\\DataBaseCpp\\src\\headers\\idGenerator.h"
+#include "headers/authUser.h"
+#include "headers/createUser.h"
+#include "headers/idGenerator.h"
 
 using namespace std;
 
