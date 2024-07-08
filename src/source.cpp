@@ -9,9 +9,9 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "headers/authUser.h"
-#include "headers/createUser.h"
-#include "headers/idGenerator.h"
+#include "include/createUser.h"
+#include "include/authUser.h"
+#include "include/idGenerator.h"
 
 using namespace std;
 
@@ -23,8 +23,8 @@ struct Product {
 
 vector<Product> myDataBase;
 
-const string productFilename = "C:\\DataBaseCpp\\data\\database.csv";
-const string userFilename = "C:\\DataBaseCpp\\config\\user.cfg";
+const string productFilename = "../data/database.csv";
+const string userFilename = "../config/user.cfg";
 
 void clearConsole() {
     #ifdef _WIN32
