@@ -26,14 +26,6 @@ vector<Product> myDataBase;
 const string productFilename = "../data/database.csv";
 const string userFilename = "../config/user.cfg";
 
-void clearConsole() {
-    #ifdef _WIN32
-    system("cls");
-    #else
-    system("clear");
-    #endif
-}
-
 void loadDataFromFile(const string& filename) {
     ifstream inFile(filename);
     if (!inFile) {
@@ -154,10 +146,10 @@ int main() {
             case 'c':
                 createUser(userFilename);
                 this_thread::sleep_for(chrono::milliseconds(999));
-                clearConsole();
+                system("cls");
                 break;
             case 'a':
-                clearConsole();
+                system("cls");
                 cout << endl << "Enter login: ";
                 cin >> login;
                 cout << "Enter password: ";
@@ -168,7 +160,7 @@ int main() {
 
                     loadDataFromFile(productFilename);
                     this_thread::sleep_for(chrono::milliseconds(700));
-                    clearConsole();
+                    system("cls");
 
                     while (true) {
                         cout << endl << "Choose action:" << endl;
@@ -183,11 +175,11 @@ int main() {
 
                         switch (choice) {
                             case '1':
-                                clearConsole();
+                                system("cls");
                                 printData();
                                 break;
                             case '2':
-                                clearConsole();
+                                system("cls");
                                 enterData();
                                 saveDataToFile(productFilename);
                                 break;
