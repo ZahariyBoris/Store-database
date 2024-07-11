@@ -8,12 +8,20 @@
 #include <iomanip>
 #include <cstdlib>
 #include <sstream>
+#include <algorithm>
 
 #include "include/createUser.h"
 #include "include/authUser.h"
 #include "include/idGenerator.h"
 
 using namespace std;
+
+enum class SortOption {
+    NAME,
+    ID,
+    PRICE,
+    NONE
+};
 
 struct Product {
     string name;
@@ -53,18 +61,40 @@ void loadDataFromFile(const string& filename) {
     cout << "Data loaded successfully from file: " << filename << endl;
 }
 
-void printData() {
-    if (myDataBase.empty()) {
+void printData(SortOption sortOption) {
+    if (myDataBase.empty()) {   
         cout << "No products to display." << endl;
         return;
     }
-    cout << "---------------------------------------" << endl; 
+
+    switch (sortOption) {
+        case SortOption::NAME:
+            sort(myDataBase.begin(), myDataBase.end(), [](const Product& a, const Product& b) {
+                return a.name < b.name;
+            });
+            break;
+        case SortOption::ID:
+            sort(myDataBase.begin(), myDataBase.end(), [](const Product& a, const Product& b) {
+                return a.ID < b.ID;
+            });
+            break;
+        case SortOption::PRICE:
+            sort(myDataBase.begin(), myDataBase.end(), [](const Product& a, const Product& b) {
+                return a.price < b.price;
+            });
+            break;
+        case SortOption::NONE:
+        default:
+            break;
+    }
+
+    cout << "---------------------------------------" << endl;
     cout << "|   Name   |      ID      |   Price   |" << endl;
     cout << "---------------------------------------" << endl;
     for (const auto& product : myDataBase) {
-        cout << "|" << setw(9) << product.name << " |" 
-        << setw(13) << product.ID << " |" 
-        << setw(10) << product.price << " |" << endl;
+        cout << "|" << setw(9) << product.name << " |"
+             << setw(13) << product.ID << " |"
+             << setw(10) << product.price << " |" << endl;
     }
     cout << "---------------------------------------" << endl << endl;
 }
@@ -174,10 +204,33 @@ int main() {
                         cin >> choice;
 
                         switch (choice) {
-                            case '1':
+                            case '1': {
                                 system("cls");
-                                printData();
+                                char sortChoice;
+                                cout << "Sort by: (n)ame, (i)d, (p)rice, (e)xit: ";
+                                cin >> sortChoice;
+                                SortOption sortOption = SortOption::NONE;
+                                switch (sortChoice) {
+                                    case 'n':
+                                        sortOption = SortOption::NAME;
+                                        break;
+                                    case 'i':
+                                        sortOption = SortOption::ID;
+                                        break;
+                                    case 'p':
+                                        sortOption = SortOption::PRICE;
+                                        break;
+                                    case 'e':
+                                        sortOption = SortOption::NONE;
+                                        break;
+                                    default:
+                                        cout << "Invalid choice. Defaulting to no sorting." << endl;
+                                        sortOption = SortOption::NONE;
+                                        break;
+                                }
+                                printData(sortOption);
                                 break;
+                            }
                             case '2':
                                 system("cls");
                                 enterData();
