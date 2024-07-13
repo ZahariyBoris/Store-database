@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
+#include <typeinfo>
 
 #include "include/createUser.h"
 #include "include/authUser.h"
@@ -100,15 +101,33 @@ void printData(SortOption sortOption) {
 }
 
 void enterData() {
-    Product newProduct;
-    cout << "\nEnter name of product: ";
-    cin.ignore();
-    getline(cin, newProduct.name);
-    newProduct.ID = generateID();
-    cout << "Enter the price of product: ";
-    cin >> newProduct.price;
-    myDataBase.push_back(newProduct);
-    cout << "Product created successfully!" << endl;
+    while (true) {
+        Product newProduct;
+
+        cout << "\nEnter name of product: ";
+        getline(cin, newProduct.name);
+
+        if (newProduct.name.empty()) {
+            cout << "Invalid input. Please try again!" << endl;
+            continue;
+        }
+
+        newProduct.ID = generateID();
+
+        cout << "Enter the price of product: ";
+        if (!(cin >> newProduct.price) || typeid(newProduct.price) != typeid(float)) {
+            cout << "Invalid input. Please try again!" << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        myDataBase.push_back(newProduct);
+        cout << "Product created successfully!" << endl;
+        break;
+    }
 }
 
 void saveDataToFile(const string& filename) {
