@@ -173,6 +173,10 @@ bool userExists(const string& filename, const string& login) {
     return false;
 }
 
+void clearScreen() {
+    cout << "\033[2J\033[1;1H";
+}
+
 int main() {
     
     char choice;
@@ -195,10 +199,10 @@ int main() {
             case 'c':
                 createUser(userFilename);
                 this_thread::sleep_for(chrono::milliseconds(999));
-                system("cls");
+                clearScreen();
                 break;
             case 'a':
-                system("cls");
+                clearScreen();
                 cout << endl << "Enter login: ";
                 cin >> login;
                 cout << "Enter password: ";
@@ -209,7 +213,7 @@ int main() {
 
                     loadDataFromFile(productFilename);
                     this_thread::sleep_for(chrono::milliseconds(700));
-                    system("cls");
+                    clearScreen();
 
                     while (true) {
                         cout << endl << "Choose action:" << endl;
@@ -224,7 +228,7 @@ int main() {
 
                         switch (choice) {
                             case '1': {
-                                system("cls");
+                                clearScreen();
                                 char sortChoice;
                                 cout << "Sort by: (n)ame, (i)d, (p)rice, (e)xit: ";
                                 cin >> sortChoice;
@@ -251,7 +255,7 @@ int main() {
                                 break;
                             }
                             case '2':
-                                system("cls");
+                                clearScreen();
                                 enterData();
                                 saveDataToFile(productFilename);
                                 break;
