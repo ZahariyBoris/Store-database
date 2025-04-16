@@ -17,16 +17,14 @@
 
 using namespace std;
 
-enum class SortOption
-{
+enum class SortOption {
     NAME,
     ID,
     PRICE,
     NONE
 };
 
-struct Product
-{
+struct Product {
     string name;
     int ID;
     float price;
@@ -37,19 +35,16 @@ vector<Product> myDataBase;
 const string productFilename = "../data/database.csv";
 const string userFilename = "../config/user.cfg";
 
-void loadDataFromFile(const string &filename)
-{
+void loadDataFromFile(const string& filename) {
     ifstream inFile(filename);
-    if (!inFile)
-    {
+    if (!inFile) {
         cout << "Error opening file for reading: " << filename << endl;
         return;
     }
 
     myDataBase.clear();
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)) {
         stringstream ss(line);
         string name;
         int ID;
@@ -60,34 +55,28 @@ void loadDataFromFile(const string &filename)
         ss.ignore(1);
         ss >> price;
 
-        myDataBase.push_back({name, ID, price});
+        myDataBase.push_back({ name, ID, price });
     }
 
     inFile.close();
     cout << "Data loaded successfully from file: " << filename << endl;
 }
 
-void printData(SortOption sortOption)
-{
-    if (myDataBase.empty())
-    {
+void printData(SortOption sortOption) {
+    if (myDataBase.empty()) {
         cout << "No products to display." << endl;
         return;
     }
 
-    switch (sortOption)
-    {
+    switch (sortOption) {
     case SortOption::NAME:
-        sort(myDataBase.begin(), myDataBase.end(), [](const Product &a, const Product &b)
-             { return a.name < b.name; });
+        sort(myDataBase.begin(), myDataBase.end(), [](const Product& a, const Product& b) { return a.name < b.name; });
         break;
     case SortOption::ID:
-        sort(myDataBase.begin(), myDataBase.end(), [](const Product &a, const Product &b)
-             { return a.ID < b.ID; });
+        sort(myDataBase.begin(), myDataBase.end(), [](const Product& a, const Product& b) { return a.ID < b.ID; });
         break;
     case SortOption::PRICE:
-        sort(myDataBase.begin(), myDataBase.end(), [](const Product &a, const Product &b)
-             { return a.price < b.price; });
+        sort(myDataBase.begin(), myDataBase.end(), [](const Product& a, const Product& b) { return a.price < b.price; });
         break;
     case SortOption::NONE:
     default:
@@ -97,27 +86,23 @@ void printData(SortOption sortOption)
     cout << "---------------------------------------" << endl;
     cout << "|   Name   |      ID      |   Price   |" << endl;
     cout << "---------------------------------------" << endl;
-    for (const auto &product : myDataBase)
-    {
+    for (const auto& product : myDataBase) {
         cout << "|" << setw(9) << product.name << " |"
-             << setw(13) << product.ID << " |"
-             << setw(10) << product.price << " |" << endl;
+            << setw(13) << product.ID << " |"
+            << setw(10) << product.price << " |" << endl;
     }
     cout << "---------------------------------------" << endl
-         << endl;
+        << endl;
 }
 
-void enterData()
-{
-    while (true)
-    {
+void enterData() {
+    while (true) {
         Product newProduct;
 
         cout << "\nEnter name of product: ";
         getline(cin, newProduct.name);
 
-        if (newProduct.name.empty())
-        {
+        if (newProduct.name.empty()) {
             cout << "Invalid input. Please try again!" << endl;
             continue;
         }
@@ -125,8 +110,7 @@ void enterData()
         newProduct.ID = generateID();
 
         cout << "Enter the price of product: ";
-        if (!(cin >> newProduct.price) || typeid(newProduct.price) != typeid(float))
-        {
+        if (!(cin >> newProduct.price) || typeid(newProduct.price) != typeid(float)) {
             cout << "Invalid input. Please try again!" << endl;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -141,17 +125,14 @@ void enterData()
     }
 }
 
-void saveDataToFile(const string &filename)
-{
+void saveDataToFile(const string& filename) {
     ofstream outFile(filename);
-    if (!outFile)
-    {
+    if (!outFile) {
         cout << "Error opening file for writing: " << filename << endl;
         return;
     }
 
-    for (const auto &product : myDataBase)
-    {
+    for (const auto& product : myDataBase) {
         outFile << product.name << "," << product.ID << "," << product.price << endl;
     }
 
@@ -159,11 +140,9 @@ void saveDataToFile(const string &filename)
     cout << "Data saved successfully to file: " << filename << endl;
 }
 
-void deleteDataFromFile(const string &filename1)
-{
+void deleteDataFromFile(const string& filename1) {
     ofstream outFile1(filename1, ofstream::trunc);
-    if (!outFile1)
-    {
+    if (!outFile1) {
         cerr << "Error opening file for writing: " << filename1 << endl;
         return;
     }
@@ -171,19 +150,15 @@ void deleteDataFromFile(const string &filename1)
     cout << "Data deleted successfully from file: " << filename1 << endl;
 }
 
-bool userExists(const string &filename, const string &login)
-{
+bool userExists(const string& filename, const string& login) {
     ifstream inFile(filename);
-    if (!inFile)
-    {
+    if (!inFile) {
         return false;
     }
 
     string fileLogin;
-    while (inFile >> fileLogin)
-    {
-        if (fileLogin == login)
-        {
+    while (inFile >> fileLogin) {
+        if (fileLogin == login) {
             inFile.close();
             return true;
         }
@@ -193,13 +168,11 @@ bool userExists(const string &filename, const string &login)
     return false;
 }
 
-void clearScreen()
-{
+void clearScreen() {
     cout << "\033[2J\033[1;1H";
 }
 
-int main()
-{
+int main() {
 
     char choice;
     string login, password;
@@ -208,10 +181,9 @@ int main()
     cout << "| WELCOME TO DATABASE-ULTRA 0.1 |" << endl;
     cout << "---------------------------------";
 
-    while (true)
-    {
+    while (true) {
         cout << endl
-             << "Choose action:" << endl;
+            << "Choose action:" << endl;
         cout << "c - Create new user" << endl;
         cout << "a - Authenticate user" << endl;
         cout << "q - Quit" << endl;
@@ -219,8 +191,7 @@ int main()
 
         cin >> choice;
 
-        switch (choice)
-        {
+        switch (choice) {
         case 'c':
             createUser(userFilename);
             this_thread::sleep_for(chrono::milliseconds(999));
@@ -229,23 +200,21 @@ int main()
         case 'a':
             clearScreen();
             cout << endl
-                 << "Enter login: ";
+                << "Enter login: ";
             cin >> login;
             cout << "Enter password: ";
             cin >> password;
 
-            if (authenticateUser(userFilename, login, password))
-            {
+            if (authenticateUser(userFilename, login, password)) {
                 cout << "Authentication successful! Welcome, " << login << "!" << endl;
 
                 loadDataFromFile(productFilename);
                 this_thread::sleep_for(chrono::milliseconds(700));
                 clearScreen();
 
-                while (true)
-                {
+                while (true) {
                     cout << endl
-                         << "Choose action:" << endl;
+                        << "Choose action:" << endl;
                     cout << "1 - Display products" << endl;
                     cout << "2 - Create product" << endl;
                     cout << "3 - Delete all data (User and products)" << endl;
@@ -255,8 +224,7 @@ int main()
 
                     cin >> choice;
 
-                    switch (choice)
-                    {
+                    switch (choice) {
                     case '1':
                     {
                         clearScreen();
@@ -264,8 +232,7 @@ int main()
                         cout << "Sort by: (n)ame, (i)d, (p)rice, (e)xit: ";
                         cin >> sortChoice;
                         SortOption sortOption = SortOption::NONE;
-                        switch (sortChoice)
-                        {
+                        switch (sortChoice) {
                         case 'n':
                             sortOption = SortOption::NAME;
                             break;
@@ -309,9 +276,7 @@ int main()
                         break;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 cout << "Authentication failed. Please try again." << endl;
             }
             break;
